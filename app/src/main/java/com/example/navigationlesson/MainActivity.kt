@@ -53,10 +53,10 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(viewModel: WeatherViewModel) {
     Log.d("MyLogs","1")
     val pageState by viewModel.state.collectAsStateWithLifecycle()
-    val onClick = viewModel::procesIntent
+    val onClick = viewModel::processIntent
     Success(pageState,onClick)
 
-    if(pageState.isLiading){
+    if(pageState.isLoading){
         Load()
     }
 }

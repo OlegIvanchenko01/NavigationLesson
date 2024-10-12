@@ -1,9 +1,6 @@
 package com.example.navigationlesson.network
 
-import com.example.example.ExampleJson2KtKotlin
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Response
+import com.example.navigationlesson.model.ExampleJson2KtKotlin
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET

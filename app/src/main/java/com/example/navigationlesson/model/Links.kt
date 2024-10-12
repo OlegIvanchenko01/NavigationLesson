@@ -1,4 +1,4 @@
-package com.example.example
+package com.example.navigationlesson.model
 
 import com.google.gson.annotations.SerializedName
 
