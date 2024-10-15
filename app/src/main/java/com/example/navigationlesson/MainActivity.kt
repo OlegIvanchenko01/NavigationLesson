@@ -1,7 +1,6 @@
 package com.example.navigationlesson
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -35,7 +34,6 @@ import com.example.navigationlesson.ui.screens.WeatherViewModel
 import com.example.navigationlesson.ui.theme.NavigationLessonTheme
 import com.example.navigationlesson.ui.theme.yellow_bg_card
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,61 +49,61 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(viewModel: WeatherViewModel) {
-    Log.d("MyLogs","1")
     val pageState by viewModel.state.collectAsStateWithLifecycle()
     val onClick = viewModel::processIntent
-    Success(pageState,onClick)
 
-    if(pageState.isLoading){
+    Success(pageState, onClick)
+
+    if (pageState.isLoading) {
         Load()
     }
 }
+
 @Composable
-fun Load(){
+fun Load() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
-    ){
+    ) {
         Text("Load")
     }
 }
 
 @Composable
-fun Success(pageState: PageState, onClick: (IntentsOnClick)-> Unit){
-
+fun Success(pageState: PageState, onClick: (IntentsOnClick) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black),
 
-    ){
+        ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
             Button(
                 shape = RoundedCornerShape(5.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = yellow_bg_card),
                 onClick = {
-                onClick(IntentsOnClick.BackPage)
-            }) {
+                    onClick(IntentsOnClick.BackPage)
+                }) {
                 Text("Back")
             }
             Button(
                 shape = RoundedCornerShape(5.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = yellow_bg_card),
                 onClick = {
-                onClick(IntentsOnClick.NextPage)
-            }) {
+                    onClick(IntentsOnClick.NextPage)
+                }) {
                 Text("Next Page")
             }
 
         }
 
         LazyColumn {
-            items(pageState.info.data){ item ->
+            items(pageState.info.data) { item ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -115,13 +113,13 @@ fun Success(pageState: PageState, onClick: (IntentsOnClick)-> Unit){
                         contentColor = Color.White
                     )
 
-                ){
+                ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
-                    ){
+                    ) {
                         Text(
                             "${item.breed}",
                             style = TextStyle(fontSize = 20.sp)
@@ -130,8 +128,7 @@ fun Success(pageState: PageState, onClick: (IntentsOnClick)-> Unit){
                             modifier = Modifier
                                 .fillMaxWidth()
 
-                        ){
-
+                        ) {
                             Text(
                                 "Country: ${item.country}",
                                 style = TextStyle(fontSize = 15.sp)
@@ -140,8 +137,6 @@ fun Success(pageState: PageState, onClick: (IntentsOnClick)-> Unit){
                                 "Origin: ${item.origin}",
                                 style = TextStyle(fontSize = 15.sp)
                             )
-
-
                             Text(
                                 "Pattern: ${item.pattern}",
                                 style = TextStyle(fontSize = 15.sp)
@@ -150,14 +145,10 @@ fun Success(pageState: PageState, onClick: (IntentsOnClick)-> Unit){
                                 "Coat: ${item.coat}",
                                 style = TextStyle(fontSize = 15.sp)
                             )
-
-
                         }
-
                     }
                 }
             }
         }
-
     }
 }

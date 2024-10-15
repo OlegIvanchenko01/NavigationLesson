@@ -2,37 +2,41 @@ package com.example.navigationlesson.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.navigationlesson.model.ExampleJson2KtKotlinModel
-import com.example.navigationlesson.network.WeatherApi
+import com.example.data.models.BreedsModel
+import com.example.data.repository.BreedsRepositoryInterface
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+
+
+
 data class PageState(
     val page: Int = 1,
-    val isLoading : Boolean = true,
-    val info : ExampleJson2KtKotlinModel = ExampleJson2KtKotlinModel.empty()
+    val isLoading: Boolean = true,
+    val info:  BreedsModel = BreedsModel.empty()
 )
 
-sealed class IntentsOnClick{
-    data object NextPage :IntentsOnClick()
-    data object BackPage :IntentsOnClick()
+sealed class IntentsOnClick {
+    data object NextPage : IntentsOnClick()
+    data object BackPage : IntentsOnClick()
 }
 
-class WeatherViewModel: ViewModel(){
+class WeatherViewModel : ViewModel() {
+    private val breedsRepositoryInterface : BreedsRepositoryInterface = TODO()
     private val _state: MutableStateFlow<PageState> = MutableStateFlow(PageState())
     val state: StateFlow<PageState>
-        get()=_state
+        get() = _state
 
-    fun processIntent(intent : IntentsOnClick){
-        when(intent){
+    fun processIntent(intent: IntentsOnClick) {
+        when (intent) {
             IntentsOnClick.NextPage -> {
-                if (_state.value.page==4)
+                if (_state.value.page == 4)
                     return
                 _state.update {
                     it.copy(
-                        page = it.page+1
+                        page = it.page + 1
                     )
 
                 }
@@ -40,11 +44,11 @@ class WeatherViewModel: ViewModel(){
             }
 
             IntentsOnClick.BackPage -> {
-                if (_state.value.page==1)
+                if (_state.value.page == 1)
                     return
                 _state.update {
                     it.copy(
-                        page =  it.page-1
+                        page = it.page - 1
                     )
 
                 }
@@ -58,22 +62,23 @@ class WeatherViewModel: ViewModel(){
 //        getWeatherApi()
     }
 
-    private fun getWeatherApi(){
+    private fun getWeatherApi() {
         viewModelScope.launch {
             _state.update {
                 it.copy(
                     isLoading = true
                 )
             }
-            WeatherApi.retrofitService.getPhotos(state.value.page.toString()).onSuccess { response ->
-                _state.update {
-                    it.copy(
-                        info = response.toModels(),
-                        isLoading = false
-                    )
-                }
+            WeatherApi.retrofitService.getPhotos(state.value.page.toString())
+                .onSuccess { response ->
+                    _state.update {
+                        it.copy(
+                            info = response,
+                            isLoading = false
+                        )
+                    }
 
-            }.onFailure {
+                }.onFailure {
                 _state.update {
                     it.copy(
                         isLoading = false
