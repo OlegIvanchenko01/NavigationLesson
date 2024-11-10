@@ -4,11 +4,11 @@ import com.example.data.models.BreedsDataModel
 import com.google.gson.annotations.SerializedName
 
 internal data class BreedsDataResponse(
-    @SerializedName("breed") val breed: String? = null,
-    @SerializedName("country") val country: String? = null,
-    @SerializedName("origin") val origin: String? = null,
-    @SerializedName("coat") val coat: String? = null,
-    @SerializedName("pattern") val pattern: String? = null
+    @SerializedName("breed") val breed: String = "",
+    @SerializedName("country") val country: String = "",
+    @SerializedName("origin") val origin: String = "",
+    @SerializedName("coat") val coat: String = "",
+    @SerializedName("pattern") val pattern: String = ""
 ) {
     fun toModel() = BreedsDataModel(
         breed,

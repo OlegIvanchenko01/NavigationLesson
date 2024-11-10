@@ -1,12 +1,11 @@
 package com.example.data.repository
 
 import com.example.data.models.BreedsModel
-import com.example.data.response.BreedsResponse
-import retrofit2.http.GET
+import com.example.data.models.WeatherModel
+import retrofit2.Response
+
 
 interface BreedsRepositoryInterface {
     suspend fun getBreeds(id: String) : Result<BreedsModel>
-    companion object{
-        fun getInterface() =
-    }
+    suspend fun getWeather(city: String) : Result<WeatherModel>
 }
