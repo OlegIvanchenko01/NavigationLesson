@@ -1,106 +1,82 @@
 package com.example.navigationlesson.ui.screens
 
-import android.widget.Toast
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.example.ExampleJson2KtKotlin
-import com.example.example.ExampleJson2KtKotlinModel
-import com.example.navigationlesson.network.WeatherApi
+import com.example.data.RepositoryModule
+import com.example.data.models.BreedsModel
+import com.example.data.models.WeatherModel
+import com.example.data.repository.BreedsRepositoryInterface
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
-
-//sealed class WeatherUiState {
-//    data class Success(val example : ExampleJson2KtKotlin) : WeatherUiState()
-//    data object Loading : WeatherUiState()
-//}
-
 data class PageState(
-    val page: Int = 1,
-    val isLiading : Boolean = true,
-    val info : ExampleJson2KtKotlinModel = ExampleJson2KtKotlinModel.empty()
+    val page: String = "Madrid",
+    val isLoading: Boolean = false,
+//    val info: BreedsModel = BreedsModel.empty()
+    val info: WeatherModel = WeatherModel.empty()
 )
 
-sealed class IntentsOnClick{
-    data object NextPage :IntentsOnClick()
-    data object BackPage :IntentsOnClick()
-
+sealed class IntentsOnClick {
+    data class UpLoad(val city : String) : IntentsOnClick()
 }
 
-class WeatherViewModel: ViewModel(){
-
-
+class WeatherViewModel : ViewModel() {
+    private val breedsRepositoryInterface: BreedsRepositoryInterface =
+        RepositoryModule.getInterface()
     private val _state: MutableStateFlow<PageState> = MutableStateFlow(PageState())
     val state: StateFlow<PageState>
-        get()=_state
+        get() = _state
 
-    fun procesIntent(intent : IntentsOnClick){
-        when(intent){
-            IntentsOnClick.NextPage -> {
-                if (_state.value.page==4)
-                    return
+    fun processIntent(intent: IntentsOnClick) {
+        when (intent) {
+            is IntentsOnClick.UpLoad -> {
                 _state.update {
-                    it.copy(
-                        page = it.page+1
-                    )
-
+                    it.copy(page = intent.city)
                 }
                 getWeatherApi()
             }
 
-            IntentsOnClick.BackPage -> {
-                if (_state.value.page==1)
-                    return
-                _state.update {
-                    it.copy(
-                        page =  it.page-1
-                    )
-
-                }
-                getWeatherApi()
-            }
         }
 
     }
 
-
     init {
-        getWeatherApi()
+//        getWeatherApi()
     }
 
-    private fun getWeatherApi(){
+    private fun getWeatherApi() {
         viewModelScope.launch {
             _state.update {
                 it.copy(
-                    isLiading = true
+                    isLoading = true
                 )
             }
-            WeatherApi.retrofitService.getPhotos(state.value.page.toString()).onSuccess { response ->
+
+            breedsRepositoryInterface.getWeather(state.value.page)
+                .onSuccess {response ->
+
                 _state.update {
                     it.copy(
-                        info = response.toModels(),
-                        isLiading = false
+                        info = response,
+                        isLoading = false
                     )
                 }
-
             }.onFailure {
                 _state.update {
                     it.copy(
-                        isLiading = false
+
+                        isLoading = false
                     )
                 }
             }
 
-
         }
-
     }
-
 }
+
+
 

@@ -1,9 +1,9 @@
 package com.example.navigationlesson
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,152 +12,90 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import com.example.data.models.WeatherModel
+import com.example.data.repository.BreedsRepositoryInterface
 import com.example.navigationlesson.ui.screens.IntentsOnClick
 import com.example.navigationlesson.ui.screens.PageState
+import com.example.navigationlesson.ui.screens.Success
 import com.example.navigationlesson.ui.screens.WeatherViewModel
 import com.example.navigationlesson.ui.theme.NavigationLessonTheme
+import com.example.navigationlesson.ui.theme.blue_bg
+import com.example.navigationlesson.ui.theme.blue_bg_home_screen
 import com.example.navigationlesson.ui.theme.yellow_bg_card
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val myViewModel = WeatherViewModel()
+
 
         setContent {
+
             NavigationLessonTheme {
-                MainScreen(myViewModel)
+                MainScreen()
             }
         }
     }
 }
 
 @Composable
-fun MainScreen(viewModel: WeatherViewModel) {
-    Log.d("MyLogs","1")
+fun MainScreen(viewModel: WeatherViewModel = viewModel()) {
     val pageState by viewModel.state.collectAsStateWithLifecycle()
-    val onClick = viewModel::procesIntent
-    Success(pageState,onClick)
+    val onClick = viewModel::processIntent
 
-    if(pageState.isLiading){
+    Success(pageState.info, onClick)
+
+    if (pageState.isLoading) {
         Load()
     }
 }
+
 @Composable
-fun Load(){
+fun Load() {
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
-        Text("Load")
-    }
-}
-
-@Composable
-fun Success(pageState: PageState, onClick: (IntentsOnClick)-> Unit){
-
-    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black),
-
-    ){
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            Button(
-                shape = RoundedCornerShape(5.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = yellow_bg_card),
-                onClick = {
-                onClick(IntentsOnClick.BackPage)
-            }) {
-                Text("Back")
-            }
-            Button(
-                shape = RoundedCornerShape(5.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = yellow_bg_card),
-                onClick = {
-                onClick(IntentsOnClick.NextPage)
-            }) {
-                Text("Next Page")
-            }
-
-        }
-
-        LazyColumn {
-            items(pageState.info.data){ item ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = yellow_bg_card,
-                        contentColor = Color.White
-                    )
-
-                ){
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ){
-                        Text(
-                            "${item.breed}",
-                            style = TextStyle(fontSize = 20.sp)
-                        )
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-
-                        ){
-
-                            Text(
-                                "Country: ${item.country}",
-                                style = TextStyle(fontSize = 15.sp)
-                            )
-                            Text(
-                                "Origin: ${item.origin}",
-                                style = TextStyle(fontSize = 15.sp)
-                            )
-
-
-                            Text(
-                                "Pattern: ${item.pattern}",
-                                style = TextStyle(fontSize = 15.sp)
-                            )
-                            Text(
-                                "Coat: ${item.coat}",
-                                style = TextStyle(fontSize = 15.sp)
-                            )
-
-
-                        }
-
-                    }
-                }
-            }
-        }
-
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            "Load",
+            style = TextStyle(color = Color.White)
+            )
     }
 }
+
+
+
